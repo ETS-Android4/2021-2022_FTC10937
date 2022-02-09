@@ -40,13 +40,8 @@ public class servoSetup
     // hWmP used later in hardware mapping
     HardwareMap hWmP = null;
 
-    // Constructor
-    public servoSetup(){
-
-    }
-
     // Initialize Motors
-    public void init(HardwareMap hardwareMap) {
+    public servoSetup(HardwareMap hardwareMap) {
         hWmP = hardwareMap;
 
         // Hardware Map

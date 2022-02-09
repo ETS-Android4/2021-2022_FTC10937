@@ -49,6 +49,7 @@ public class vision extends OpenCvPipeline
     public enum Location {
         LEFT,
         RIGHT,
+//        MIDDLE,
         NOT_FOUND
     }
     private Location location;

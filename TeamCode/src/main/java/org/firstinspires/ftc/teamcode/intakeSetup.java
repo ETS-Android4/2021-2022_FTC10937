@@ -43,12 +43,7 @@ public class intakeSetup
     HardwareMap hWmP = null;
 
     // Constructor
-    public intakeSetup(){
-
-    }
-
-    // Initialize Motors
-    public void init(HardwareMap hardwareMap) {
+    public intakeSetup(HardwareMap hardwareMap){
         hWmP = hardwareMap;
 
         // Hardware Map

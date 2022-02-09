@@ -44,13 +44,8 @@ public class driveTrainSetup
     // hWmP used later in hardware mapping
     HardwareMap hWmP = null;
 
-    // Constructor
-    public driveTrainSetup(){
-
-    }
-
     // Initialize Motors
-    public void init(HardwareMap hardwareMap) {
+    public driveTrainSetup(HardwareMap hardwareMap) {
         hWmP = hardwareMap;
 
         // Hardware Map
