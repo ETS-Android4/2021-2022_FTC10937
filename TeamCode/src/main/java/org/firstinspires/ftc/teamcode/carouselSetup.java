@@ -37,22 +37,13 @@ public class carouselSetup
     // Motor Constructors
     public DcMotorEx carouselMotor = null;
 
-    // hWmP used later in hardware mapping
-    HardwareMap hWmP = null;
-
-    // Initialize Motors
+    // Setup used to map motors
     public carouselSetup(HardwareMap hardwareMap) {
-        hWmP = hardwareMap;
-
-        // Hardware Map
-        // Change name for lift
-        carouselMotor = hWmP.get(DcMotorEx.class, "caroM");
+        // Hardware Map motor as caroM
+        carouselMotor = hardwareMap.get(DcMotorEx.class, "caroM");
 
         // Set direction
         carouselMotor.setDirection(DcMotorEx.Direction.FORWARD);
-
-        // Motor power 0
-        carouselMotor.setPower(0);
     }
 }
 

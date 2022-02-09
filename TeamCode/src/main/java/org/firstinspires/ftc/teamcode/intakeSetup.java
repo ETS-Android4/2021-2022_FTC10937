@@ -39,21 +39,12 @@ public class intakeSetup
     // Motor Constructors
     public DcMotorEx intakeMotor = null;
 
-    // hWmP used later in hardware mapping
-    HardwareMap hWmP = null;
-
-    // Constructor
+    // Setup function used to hardwareMap motor
     public intakeSetup(HardwareMap hardwareMap){
-        hWmP = hardwareMap;
-
         // Hardware Map
-        intakeMotor = hWmP.get(DcMotorEx.class, "intake");
-
+        intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
         // Set direction
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        // Motor power 0
-        intakeMotor.setPower(0);
     }
 }
 

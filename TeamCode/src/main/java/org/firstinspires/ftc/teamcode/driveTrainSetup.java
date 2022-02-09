@@ -41,30 +41,19 @@ public class driveTrainSetup
     public DcMotorEx right1 = null;
     public DcMotorEx right2 = null;
 
-    // hWmP used later in hardware mapping
-    HardwareMap hWmP = null;
-
     // Initialize Motors
     public driveTrainSetup(HardwareMap hardwareMap) {
-        hWmP = hardwareMap;
-
         // Hardware Map
-        left1 = hWmP.get(DcMotorEx.class, "l1");
-        left2 = hWmP.get(DcMotorEx.class, "l2");
-        right1 = hWmP.get(DcMotorEx.class, "r1");
-        right2 = hWmP.get(DcMotorEx.class, "r2");
+        left1 = hardwareMap.get(DcMotorEx.class, "l1");
+        left2 = hardwareMap.get(DcMotorEx.class, "l2");
+        right1 = hardwareMap.get(DcMotorEx.class, "r1");
+        right2 = hardwareMap.get(DcMotorEx.class, "r2");
 
         // Set direction
         left1.setDirection(DcMotorSimple.Direction.FORWARD);
         left2.setDirection(DcMotorSimple.Direction.FORWARD);
         right1.setDirection(DcMotorSimple.Direction.REVERSE);
         right2.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        // Motor power 0
-        left1.setPower(0);
-        left2.setPower(0);
-        right1.setPower(0);
-        right2.setPower(0);
     }
 }
 
