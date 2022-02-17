@@ -1,26 +1,35 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
-@Disabled
 @Autonomous(name="Color Detection Auto", group="Auto")
 public class visionAuto extends LinearOpMode{
-    OpenCvWebcam webcam;
 
-    ElapsedTime runtime = new ElapsedTime();
-    driveTrainSetup Drive = new driveTrainSetup(hardwareMap);
-    intakeSetup Intake = new intakeSetup(hardwareMap);
 
     @Override
+
     public void runOpMode() throws InterruptedException {
+        OpenCvWebcam webcam;
+
+        ElapsedTime runtime = new ElapsedTime();
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        intakeSetup Intake = new intakeSetup();
+
+        Intake.init(hardwareMap);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().
                 getIdentifier("cameraMonitorViewId", "id",
                         hardwareMap.appContext.getPackageName());
@@ -42,49 +51,36 @@ public class visionAuto extends LinearOpMode{
             }
         });
 
+        TrajectorySequence leftTrajectory = drive.trajectorySequenceBuilder(new Pose2d(-44, -61, Math.toRadians(90)))
+                .strafeRight(10)
+                .build();
+
+        TrajectorySequence midTrajectory = drive.trajectorySequenceBuilder(new Pose2d(-44, -61, Math.toRadians(90)))
+                .forward(5)
+                .turn(180)
+                .build();
+
+        TrajectorySequence rightTrajectory = drive.trajectorySequenceBuilder(new Pose2d(-44, -61, Math.toRadians(90)))
+                .strafeRight(-10)
+                .build();
+
         waitForStart();
         runtime.reset();
-
-        Drive.left1.setPower(1);
-        Drive.left2.setPower(1);
-        Drive.right1.setPower(1);
-        Drive.right2.setPower(1);
-        while (opModeIsActive() && (runtime.seconds() < .5)) {
-            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
-        }
+        webcam.stopStreaming();
 
         switch (detector.getLocation()) {
             case LEFT:
-                Drive.left1.setPower(-1);
-                Drive.left2.setPower(1);
-                Drive.right1.setPower(1);
-                Drive.right2.setPower(-1);
+                if (isStopRequested()) return;
+                drive.followTrajectorySequence(leftTrajectory);
                 break;
             case RIGHT:
-                Drive.left1.setPower(1);
-                Drive.left2.setPower(-1);
-                Drive.right1.setPower(-1);
-                Drive.right2.setPower(1);
+                if (isStopRequested()) return;
+                drive.followTrajectorySequence(rightTrajectory);
                 break;
-            case NOT_FOUND:
-                Drive.left1.setPower(0);
-                Drive.left2.setPower(0);
-                Drive.right1.setPower(0);
-                Drive.right2.setPower(0);
+            case CENTER:
+                if (isStopRequested()) return;
+                drive.followTrajectorySequence(midTrajectory);
                 break;
-        }
-        webcam.stopStreaming();
-
-        Drive.left1.setPower(1);
-        Drive.left2.setPower(1);
-        Drive.right1.setPower(1);
-        Drive.right2.setPower(1);
-        Intake.intakeMotor.setPower(1);
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() < 1)) {
-            telemetry.addData("Path", "Leg 1: %2.5f S Elapsed", runtime.seconds());
-            telemetry.update();
         }
     }
 }

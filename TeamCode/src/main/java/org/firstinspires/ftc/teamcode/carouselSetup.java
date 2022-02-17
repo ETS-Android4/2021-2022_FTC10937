@@ -37,10 +37,18 @@ public class carouselSetup
     // Motor Constructors
     public DcMotorEx carouselMotor = null;
 
+    HardwareMap hwMap =  null;
+
+    public carouselSetup() {
+
+    }
+
     // Setup used to map motors
-    public carouselSetup(HardwareMap hardwareMap) {
+    public void init(HardwareMap ahwMap) {
+        hwMap = ahwMap;
+
         // Hardware Map motor as caroM
-        carouselMotor = hardwareMap.get(DcMotorEx.class, "caroM");
+        carouselMotor = hwMap.get(DcMotorEx.class, "caroM");
 
         // Set direction
         carouselMotor.setDirection(DcMotorEx.Direction.FORWARD);

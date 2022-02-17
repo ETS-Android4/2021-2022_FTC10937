@@ -49,19 +49,22 @@ public class vision extends OpenCvPipeline
     public enum Location {
         LEFT,
         RIGHT,
-//        MIDDLE,
-        NOT_FOUND
+        CENTER
     }
-    private Location location;
+
+    private volatile Location location;
 
     static final Rect LEFT_ROI = new Rect(
-        new Point(60, 35),
-        new Point(120, 75));
+        new Point(0, 15),
+        new Point(100, 95));
+    static final Rect MID_ROI = new Rect(
+            new Point(110, 15),
+            new Point(250, 95));
     static final Rect RIGHT_ROI = new Rect(
-            new Point(140, 35),
-            new Point(200, 75));
+            new Point(260, 15),
+            new Point(320, 95));
 
-    static double PERCENT_COLOR_THRESHOLD = 0.4;
+    static double PERCENT_COLOR_THRESHOLD = 0.05;
 
     public vision(Telemetry t) {
         telemetry = t;
@@ -76,32 +79,36 @@ public class vision extends OpenCvPipeline
         Core.inRange(mat, lowHSV, highHSV, mat);
 
         Mat left = mat.submat(LEFT_ROI);
+        Mat mid = mat.submat(MID_ROI);
         Mat right = mat.submat(RIGHT_ROI);
 
         double leftValue = Core.sumElems(left).val[0] / LEFT_ROI.area() / 255;
+        double midValue = Core.sumElems(mid).val[0] / MID_ROI.area() / 255;
         double rightValue = Core.sumElems(right).val[0] / RIGHT_ROI.area() / 255;
 
         left.release();
         right.release();
 
         telemetry.addData("Left raw value", (int) Core.sumElems(left).val[0]);
+        telemetry.addData("Center raw value", (int) Core.sumElems(mid).val[0]);
         telemetry.addData("Right raw value", (int) Core.sumElems(right).val[0]);
         telemetry.addData("Left percentage", Math.round(leftValue * 100) + "%");
+        telemetry.addData("Center percentage", Math.round(midValue * 100) + "%");
         telemetry.addData("Right percentage", Math.round(rightValue * 100) + "%");
 
         boolean blockLeft = leftValue > PERCENT_COLOR_THRESHOLD;
+        boolean blockMid = midValue > PERCENT_COLOR_THRESHOLD;
         boolean blockRight = rightValue > PERCENT_COLOR_THRESHOLD;
 
-        if (blockLeft && blockRight) {
-            location = Location.NOT_FOUND;
-            telemetry.addData("Yellow Location", "not found");
-        }
-        if (blockLeft) {
-            location = Location.RIGHT;
-            telemetry.addData("Yellow Location", "right");
-        } else {
+        if (blockMid) {
+            location = Location.CENTER;
+            telemetry.addData("Yellow Location", "middle");
+        } else if (blockLeft) {
             location = Location.LEFT;
             telemetry.addData("Yellow Location", "left");
+        } else {
+            location = Location.RIGHT;
+            telemetry.addData("Yellow Location", "right");
         }
         telemetry.update();
 
@@ -111,6 +118,7 @@ public class vision extends OpenCvPipeline
         Scalar colorYellow = new Scalar(0, 255, 0);
 
         Imgproc.rectangle(mat, LEFT_ROI, location == Location.LEFT? colorYellow:colorBalls);
+        Imgproc.rectangle(mat, MID_ROI, location == Location.CENTER? colorYellow:colorBalls);
         Imgproc.rectangle(mat, RIGHT_ROI, location == Location.RIGHT? colorYellow:colorBalls);
 
         return mat;

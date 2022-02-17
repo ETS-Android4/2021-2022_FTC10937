@@ -39,16 +39,19 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class FTC10937TeleOp extends OpMode {
     // Classes runtime + drivetrain + intake + lift + servo
     ElapsedTime runtime = new ElapsedTime();
-    driveTrainSetup Drive = new driveTrainSetup(hardwareMap);
-    intakeSetup Intake = new intakeSetup(hardwareMap);
-    carouselSetup Carousel = new carouselSetup(hardwareMap);
-    liftSetup Lift = new liftSetup();
+    driveTrainSetup Drive = new driveTrainSetup();
+    intakeSetup Intake = new intakeSetup();
+    carouselSetup Carousel = new carouselSetup();
+//    liftSetup Lift = new liftSetup();
 //    servoSetup Servo = new servoSetup();
 
     @Override
     public void init() {
         // Initialize motors + servos
-        Lift.init();
+//        Lift.init();
+        Carousel.init(hardwareMap);
+        Drive.init(hardwareMap);
+        Intake.init(hardwareMap);
 //        Servo.init(hardwareMap);
 
         // initialized
@@ -95,17 +98,17 @@ public class FTC10937TeleOp extends OpMode {
             Intake.intakeMotor.setPower(0);
         }
 
-        if(gamepad2.dpad_up) {
-            // if driver 2 = up then lift up
-//            Lift.liftMotor.setVelocity(500);
-            Lift.PID(250);
-        } else if(gamepad2.dpad_down) {
-            // if driver 2 = down then lift down
-//            Lift.liftMotor.setVelocity(-500);
-            Lift.PID(-250);
-        } else {
-            Lift.liftMotor.setVelocity(0);
-        }
+//        if(gamepad2.dpad_up) {
+//            // if driver 2 = up then lift up
+////            Lift.liftMotor.setVelocity(500);
+//            Lift.PID(250);
+//        } else if(gamepad2.dpad_down) {
+//            // if driver 2 = down then lift down
+////            Lift.liftMotor.setVelocity(-500);
+//            Lift.PID(-250);
+//        } else {
+//            Lift.liftMotor.setVelocity(0);
+//        }
 
         if(gamepad2.dpad_left) {
             Carousel.carouselMotor.setPower(1);

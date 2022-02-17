@@ -15,15 +15,16 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name="Roadrunner Test Auto", group="Auto")
+@Autonomous(name="Roadrunner Test Auto Vision", group="Auto")
 public class roadrunnerTest extends LinearOpMode {
     OpenCvWebcam webcam;
     SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-    intakeSetup Intake = new intakeSetup(hardwareMap);
+    intakeSetup Intake = new intakeSetup();
 
     ElapsedTime runtime = new ElapsedTime();
     @Override
     public void runOpMode() throws InterruptedException {
+        Intake.init(hardwareMap);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().
                 getIdentifier("cameraMonitorViewId", "id",
                         hardwareMap.appContext.getPackageName());
@@ -148,15 +149,15 @@ public class roadrunnerTest extends LinearOpMode {
         }
 
         switch (detector.getLocation()) {
-            case LEFT:
+            case RIGHT:
                 if (isStopRequested()) return;
                 drive.followTrajectorySequence(leftTrajectory);
                 break;
-            case RIGHT:
+            case LEFT:
                 if (isStopRequested()) return;
                 drive.followTrajectorySequence(rightTrajectory);
                 break;
-            case NOT_FOUND:
+            case CENTER:
                 if (isStopRequested()) return;
                 drive.followTrajectorySequence(middleTrajectory);
                 break;

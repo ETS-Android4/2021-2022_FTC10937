@@ -41,13 +41,21 @@ public class driveTrainSetup
     public DcMotorEx right1 = null;
     public DcMotorEx right2 = null;
 
+    HardwareMap hwMap =  null;
+
+    public driveTrainSetup() {
+
+    }
+
     // Initialize Motors
-    public driveTrainSetup(HardwareMap hardwareMap) {
+    public void init(HardwareMap ahwMap) {
+        hwMap = ahwMap;
+
         // Hardware Map
-        left1 = hardwareMap.get(DcMotorEx.class, "l1");
-        left2 = hardwareMap.get(DcMotorEx.class, "l2");
-        right1 = hardwareMap.get(DcMotorEx.class, "r1");
-        right2 = hardwareMap.get(DcMotorEx.class, "r2");
+        left1 = hwMap.get(DcMotorEx.class, "l1");
+        left2 = hwMap.get(DcMotorEx.class, "l2");
+        right1 = hwMap.get(DcMotorEx.class, "r1");
+        right2 = hwMap.get(DcMotorEx.class, "r2");
 
         // Set direction
         left1.setDirection(DcMotorSimple.Direction.FORWARD);
