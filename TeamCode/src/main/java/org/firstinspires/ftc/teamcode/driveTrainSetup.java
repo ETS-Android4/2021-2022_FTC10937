@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -62,6 +63,13 @@ public class driveTrainSetup
         left2.setDirection(DcMotorSimple.Direction.FORWARD);
         right1.setDirection(DcMotorSimple.Direction.REVERSE);
         right2.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+
+    public void runUsingEncoders() {
+        left1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }
 

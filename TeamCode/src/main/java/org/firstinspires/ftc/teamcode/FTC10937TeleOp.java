@@ -43,7 +43,9 @@ public class FTC10937TeleOp extends OpMode {
     intakeSetup Intake = new intakeSetup();
     carouselSetup Carousel = new carouselSetup();
 //    liftSetup Lift = new liftSetup();
-//    servoSetup Servo = new servoSetup();
+    servoSetup Servo = new servoSetup();
+
+    int servoCount = 0;
 
     @Override
     public void init() {
@@ -52,7 +54,7 @@ public class FTC10937TeleOp extends OpMode {
         Carousel.init(hardwareMap);
         Drive.init(hardwareMap);
         Intake.init(hardwareMap);
-//        Servo.init(hardwareMap);
+        Servo.init(hardwareMap);
 
         // initialized
         telemetry.addData("Status", "Initialized");
@@ -126,6 +128,65 @@ public class FTC10937TeleOp extends OpMode {
 //            Servo.boxServo.setPosition(0);
 //        }
 
+//        if(gamepad2.y && servoCount == 0) {
+//            Servo.rotServo.setPosition(1);
+//            servoCount = 1;
+//        } else if(gamepad2.y && servoCount == 1) {
+//            Servo.bucketServo.setPosition(1);
+//            servoCount = 2;
+//        } else if(!gamepad2.y && servoCount == 2) {
+//            Servo.rotServo.setPosition(0);
+//            Servo.bucketServo.setPosition(0);
+//            servoCount = 0;
+//        }
+
+        switch (servoCount) {
+            case 0:
+                if(gamepad2.y) {
+                    Servo.rotServo.setPosition(1);
+                    servoCount = 1;
+                }
+                break;
+            case 1:
+                if(!gamepad2.y) {
+                    servoCount = 2;
+                }
+                break;
+            case 2:
+                if(gamepad2.y) {
+                    Servo.bucketServo.setPosition(1);
+                    servoCount = 3;
+                }
+                break;
+            case 3:
+                if(!gamepad2.y) {
+                    servoCount = 4;
+                }
+                break;
+            case 4:
+                if(gamepad2.y) {
+                    Servo.rotServo.setPosition(0);
+                    Servo.bucketServo.setPosition(0);
+                    servoCount = 5;
+                }
+                break;
+            case 5:
+                if(!gamepad2.y) {
+                    servoCount = 0;
+                }
+                break;
+            default:
+                servoCount = 0;
+                break;
+        }
+
+
+//        if(gamepad2.y) {
+//            Servo.rotServo.setPosition(1);
+//            Servo.bucketServo.setPosition(1);
+//        } else {
+//
+//        }
 
     }
 
