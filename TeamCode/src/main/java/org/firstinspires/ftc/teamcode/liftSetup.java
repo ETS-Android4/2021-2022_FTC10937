@@ -29,35 +29,70 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class liftSetup
+@TeleOp
+public class liftSetup extends LinearOpMode
 {
     // Motor Constructors
-    public DcMotor liftMotor = null;
+    public DcMotorEx liftMotor = null;
 
-    // hWmP used later in hardware mapping
-    HardwareMap hWmP = null;
+    static double speed = 1200;
 
-    // Constructor
-    public liftSetup(){
+    public static PIDCoefficients pidCoeffs = new PIDCoefficients(0,0,0);
+    public PIDCoefficients pidGains = new PIDCoefficients(0,0,0);
 
+    ElapsedTime PIDTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+
+    @Override
+    public void runOpMode() {
+        liftMotor = hardwareMap.get(DcMotorEx.class, "liftM");
+
+        liftMotor.setDirection(DcMotorEx.Direction.FORWARD);
+
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        waitForStart();
+
+        if(opModeIsActive()) {
+            while(opModeIsActive()) {
+                PID(speed);
+
+                telemetry.update();
+            }
+        }
     }
 
-    // Initialize Motors
-    public void init(HardwareMap hardwareMap) {
-        hWmP = hardwareMap;
+    double integral = 0;
+    double lastError = 0;
 
-        // Hardware Map
-        // Change name for lift
-        liftMotor = hWmP.get(DcMotor.class, "liftM");
+    public void PID(double targetVelocity) {
 
-        // Set direction
-        liftMotor.setDirection(DcMotor.Direction.FORWARD);
+        PIDTimer.reset();
 
-        // Motor power 0
-        liftMotor.setPower(0);
+        double currentVelocity = liftMotor.getVelocity();
+
+        double error = targetVelocity - currentVelocity;
+
+        integral += error * PIDTimer.time();
+
+        double deltaError = error - lastError;
+        double derivative = deltaError / PIDTimer.time();
+
+        pidGains.p = pidCoeffs.p * error;
+        pidGains.i = pidCoeffs.i * integral;
+        pidGains.d = pidGains.d * derivative;
+
+        liftMotor.setVelocity(pidGains.p + pidGains.i + pidGains.d + targetVelocity);
+
+        lastError = error;
     }
 }
 

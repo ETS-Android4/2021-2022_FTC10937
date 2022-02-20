@@ -32,41 +32,40 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.android.util.Size;
 import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Disabled
 
-public class vision extends OpenCvPipeline
-{
+public class distanceMeasurement extends OpenCvPipeline {
+    private int width; // width of the image
+    distanceMeasurement location;
+
+    /**
+     *
+     * @param width The width of the image (check your camera)
+     */
+    public distanceMeasurement(int width) {
+        this.width = width;
+    }
     Telemetry telemetry;
     Mat mat = new Mat();
-    public enum Location {
-        LEFT,
-        RIGHT,
-        CENTER
-    }
-
-    private volatile Location location;
-
-    static final Rect LEFT_ROI = new Rect(
-        new Point(0, 15),
-        new Point(100, 95));
-    static final Rect MID_ROI = new Rect(
-            new Point(110, 15),
-            new Point(250, 95));
-    static final Rect RIGHT_ROI = new Rect(
-            new Point(260, 15),
-            new Point(320, 95));
 
     static double PERCENT_COLOR_THRESHOLD = 0.05;
 
-    public vision(Telemetry t) {
+    public distanceMeasurement(Telemetry t) {
         telemetry = t;
     }
 
@@ -75,58 +74,57 @@ public class vision extends OpenCvPipeline
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
         Scalar lowHSV = new Scalar(23, 50, 70);
         Scalar highHSV = new Scalar(32, 255, 255);
+        Mat thresh = new Mat();
+
+//        val mask = Mat(mat.rows(), mat.cols(), CvType.CV_8UC1);
+        // We'll get a black and white image. The white regions represent the regular stones.
+        // inRange(): thresh[i][j] = {255,255,255} if mat[i][i] is within the range
+        Core.inRange(mat, lowHSV, highHSV, thresh);
+
+//        Imgproc.GaussianBlur(mask, mask);
+
+        // Use Canny Edge Detection to find edges
+        // you might have to tune the thresholds for hysteresis
+        Mat edges = new Mat();
+        Imgproc.Canny(thresh, edges, 100, 300);
 
         Core.inRange(mat, lowHSV, highHSV, mat);
+        List<MatOfPoint> contours = new ArrayList<>();
+        Mat hierarchy = new Mat();
+        Imgproc.findContours(edges, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
-        Mat left = mat.submat(LEFT_ROI);
-        Mat mid = mat.submat(MID_ROI);
-        Mat right = mat.submat(RIGHT_ROI);
-
-        double leftValue = Core.sumElems(left).val[0] / LEFT_ROI.area() / 255;
-        double midValue = Core.sumElems(mid).val[0] / MID_ROI.area() / 255;
-        double rightValue = Core.sumElems(right).val[0] / RIGHT_ROI.area() / 255;
-
-        left.release();
-        mid.release();
-        right.release();
-
-        telemetry.addData("Left raw value", (int) Core.sumElems(left).val[0]);
-        telemetry.addData("Center raw value", (int) Core.sumElems(mid).val[0]);
-        telemetry.addData("Right raw value", (int) Core.sumElems(right).val[0]);
-        telemetry.addData("Left percentage", Math.round(leftValue * 100) + "%");
-        telemetry.addData("Center percentage", Math.round(midValue * 100) + "%");
-        telemetry.addData("Right percentage", Math.round(rightValue * 100) + "%");
-
-        boolean blockLeft = leftValue > PERCENT_COLOR_THRESHOLD;
-        boolean blockMid = midValue > PERCENT_COLOR_THRESHOLD;
-        boolean blockRight = rightValue > PERCENT_COLOR_THRESHOLD;
-
-        if (blockMid) {
-            location = Location.CENTER;
-            telemetry.addData("Yellow Location", "middle");
-        } else if (blockLeft) {
-            location = Location.LEFT;
-            telemetry.addData("Yellow Location", "left");
-        } else {
-            location = Location.RIGHT;
-            telemetry.addData("Yellow Location", "right");
+        MatOfPoint2f[] contoursPoly  = new MatOfPoint2f[contours.size()];
+        Rect[] boundRect = new Rect[contours.size()];
+        for (int i = 0; i < contours.size(); i++) {
+            contoursPoly[i] = new MatOfPoint2f();
+            Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), contoursPoly[i], 3, true);
+            boundRect[i] = Imgproc.boundingRect(new MatOfPoint(contoursPoly[i].toArray()));
         }
+
         telemetry.update();
 
-        Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2BGR);
+//        Imgproc.cvtColor(input, mat, Imgproc.COLOR_GRAY2BGR);
 
-        Scalar colorBalls = new Scalar(255, 0, 0);
         Scalar colorYellow = new Scalar(0, 255, 0);
 
-        Imgproc.rectangle(mat, LEFT_ROI, location == Location.LEFT? colorYellow:colorBalls);
-        Imgproc.rectangle(mat, MID_ROI, location == Location.CENTER? colorYellow:colorBalls);
-        Imgproc.rectangle(mat, RIGHT_ROI, location == Location.RIGHT? colorYellow:colorBalls);
+        double left_x = 0.25 * width;
+        double right_x = 0.75 * width;
+        boolean left = false; // true if regular stone found on the left side
+        boolean right = false; // "" "" on the right side
+        for (int i = 0; i != boundRect.length; i++) {
+            if (boundRect[i].x < left_x)
+                left = true;
+            if (boundRect[i].x + boundRect[i].width > right_x)
+                right = true;
+
+            // draw red bounding rectangles on mat
+            // the mat has been converted to HSV so we need to use HSV as well
+            Imgproc.rectangle(mat, boundRect[i], new Scalar(0.5, 76.9, 89.8));
+        }
+
 
         return mat;
     }
 
-    public Location getLocation() {
-        return location;
-    }
 }
 

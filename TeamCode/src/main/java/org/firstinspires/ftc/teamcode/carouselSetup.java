@@ -29,35 +29,29 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class carouselSetup
 {
     // Motor Constructors
-    public DcMotor carouselMotor = null;
+    public DcMotorEx carouselMotor = null;
 
-    // hWmP used later in hardware mapping
-    HardwareMap hWmP = null;
+    HardwareMap hwMap =  null;
 
-    // Constructor
-    public carouselSetup(){
+    public carouselSetup() {
 
     }
 
-    // Initialize Motors
-    public void init(HardwareMap hardwareMap) {
-        hWmP = hardwareMap;
+    // Setup used to map motors
+    public void init(HardwareMap ahwMap) {
+        hwMap = ahwMap;
 
-        // Hardware Map
-        // Change name for lift
-        carouselMotor = hWmP.get(DcMotor.class, "caroM");
+        // Hardware Map motor as caroM
+        carouselMotor = hwMap.get(DcMotorEx.class, "caroM");
 
         // Set direction
-        carouselMotor.setDirection(DcMotor.Direction.FORWARD);
-
-        // Motor power 0
-        carouselMotor.setPower(0);
+        carouselMotor.setDirection(DcMotorEx.Direction.FORWARD);
     }
 }
 

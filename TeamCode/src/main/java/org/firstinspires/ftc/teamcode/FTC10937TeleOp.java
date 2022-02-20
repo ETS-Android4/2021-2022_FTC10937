@@ -41,18 +41,20 @@ public class FTC10937TeleOp extends OpMode {
     ElapsedTime runtime = new ElapsedTime();
     driveTrainSetup Drive = new driveTrainSetup();
     intakeSetup Intake = new intakeSetup();
-//    carouselSetup Carousel = new carouselSetup();
+    carouselSetup Carousel = new carouselSetup();
 //    liftSetup Lift = new liftSetup();
-//    servoSetup Servo = new servoSetup();
+    servoSetup Servo = new servoSetup();
+
+    int servoCount = 0;
 
     @Override
     public void init() {
         // Initialize motors + servos
+//        Lift.init();
+        Carousel.init(hardwareMap);
         Drive.init(hardwareMap);
         Intake.init(hardwareMap);
-//        Carousel.init(hardwareMap);
-//        Lift.init(hardwareMap);
-//        Servo.init(hardwareMap);
+        Servo.init(hardwareMap);
 
         // initialized
         telemetry.addData("Status", "Initialized");
@@ -100,21 +102,23 @@ public class FTC10937TeleOp extends OpMode {
 
 //        if(gamepad2.dpad_up) {
 //            // if driver 2 = up then lift up
-//            Lift.liftMotor.setPower(1);
+////            Lift.liftMotor.setVelocity(500);
+//            Lift.PID(250);
 //        } else if(gamepad2.dpad_down) {
 //            // if driver 2 = down then lift down
-//            Lift.liftMotor.setPower(-1);
+////            Lift.liftMotor.setVelocity(-500);
+//            Lift.PID(-250);
 //        } else {
-//            Lift.liftMotor.setPower(0);
+//            Lift.liftMotor.setVelocity(0);
 //        }
 
-//        if(gamepad2.dpad_left) {
-//            Carousel.carouselMotor.setPower(1);
-//        } else if(gamepad2.dpad_right) {
-//            Carousel.carouselMotor.setPower(-1);
-//        } else {
-//            Carousel.carouselMotor.setPower(0);
-//        }
+        if(gamepad2.dpad_left) {
+            Carousel.carouselMotor.setPower(1);
+        } else if(gamepad2.dpad_right) {
+            Carousel.carouselMotor.setPower(-1);
+        } else {
+            Carousel.carouselMotor.setPower(0);
+        }
 
 //        if(gamepad2.b) {
 //            // if driver 2 = b then dump box
@@ -124,6 +128,65 @@ public class FTC10937TeleOp extends OpMode {
 //            Servo.boxServo.setPosition(0);
 //        }
 
+//        if(gamepad2.y && servoCount == 0) {
+//            Servo.rotServo.setPosition(1);
+//            servoCount = 1;
+//        } else if(gamepad2.y && servoCount == 1) {
+//            Servo.bucketServo.setPosition(1);
+//            servoCount = 2;
+//        } else if(!gamepad2.y && servoCount == 2) {
+//            Servo.rotServo.setPosition(0);
+//            Servo.bucketServo.setPosition(0);
+//            servoCount = 0;
+//        }
+
+        switch (servoCount) {
+            case 0:
+                if(gamepad2.y) {
+                    Servo.rotServo.setPosition(1);
+                    servoCount = 1;
+                }
+                break;
+            case 1:
+                if(!gamepad2.y) {
+                    servoCount = 2;
+                }
+                break;
+            case 2:
+                if(gamepad2.y) {
+                    Servo.bucketServo.setPosition(1);
+                    servoCount = 3;
+                }
+                break;
+            case 3:
+                if(!gamepad2.y) {
+                    servoCount = 4;
+                }
+                break;
+            case 4:
+                if(gamepad2.y) {
+                    Servo.rotServo.setPosition(0);
+                    Servo.bucketServo.setPosition(0);
+                    servoCount = 5;
+                }
+                break;
+            case 5:
+                if(!gamepad2.y) {
+                    servoCount = 0;
+                }
+                break;
+            default:
+                servoCount = 0;
+                break;
+        }
+
+
+//        if(gamepad2.y) {
+//            Servo.rotServo.setPosition(1);
+//            Servo.bucketServo.setPosition(1);
+//        } else {
+//
+//        }
 
     }
 

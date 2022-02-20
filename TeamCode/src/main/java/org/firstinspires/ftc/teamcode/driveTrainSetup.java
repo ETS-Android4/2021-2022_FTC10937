@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -41,35 +42,34 @@ public class driveTrainSetup
     public DcMotorEx right1 = null;
     public DcMotorEx right2 = null;
 
-    // hWmP used later in hardware mapping
-    HardwareMap hWmP = null;
+    HardwareMap hwMap =  null;
 
-    // Constructor
-    public driveTrainSetup(){
+    public driveTrainSetup() {
 
     }
 
     // Initialize Motors
-    public void init(HardwareMap hardwareMap) {
-        hWmP = hardwareMap;
+    public void init(HardwareMap ahwMap) {
+        hwMap = ahwMap;
 
         // Hardware Map
-        left1 = hWmP.get(DcMotorEx.class, "l1");
-        left2 = hWmP.get(DcMotorEx.class, "l2");
-        right1 = hWmP.get(DcMotorEx.class, "r1");
-        right2 = hWmP.get(DcMotorEx.class, "r2");
+        left1 = hwMap.get(DcMotorEx.class, "l1");
+        left2 = hwMap.get(DcMotorEx.class, "l2");
+        right1 = hwMap.get(DcMotorEx.class, "r1");
+        right2 = hwMap.get(DcMotorEx.class, "r2");
 
         // Set direction
         left1.setDirection(DcMotorSimple.Direction.FORWARD);
         left2.setDirection(DcMotorSimple.Direction.FORWARD);
         right1.setDirection(DcMotorSimple.Direction.REVERSE);
         right2.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
 
-        // Motor power 0
-        left1.setPower(0);
-        left2.setPower(0);
-        right1.setPower(0);
-        right2.setPower(0);
+    public void runUsingEncoders() {
+        left1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 }
 

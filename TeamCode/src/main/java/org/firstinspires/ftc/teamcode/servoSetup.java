@@ -35,13 +35,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class servoSetup
 {
     // Servo Constructors
-    public Servo boxServo = null;
+    public Servo rotServo = null;
+    public Servo bucketServo = null;
 
     // hWmP used later in hardware mapping
     HardwareMap hWmP = null;
 
-    // Constructor
-    public servoSetup(){
+    public servoSetup() {
 
     }
 
@@ -50,10 +50,13 @@ public class servoSetup
         hWmP = hardwareMap;
 
         // Hardware Map
-        boxServo = hWmP.get(Servo.class, "boxS");
+        rotServo = hWmP.get(Servo.class, "rotServo");
+        bucketServo = hWmP.get(Servo.class, "bucketServo");
 
         // Servo Position 0 at start
-        boxServo.setPosition(0);
+        rotServo.setPosition(0);
+        bucketServo.setPosition(0);
+
     }
 }
 
