@@ -11,6 +11,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
+import java.util.Vector;
+
 
 @Autonomous(name="Test Program Auto", group="Auto")
 public class RoadrunnerNoVision extends LinearOpMode {
@@ -19,12 +21,33 @@ public class RoadrunnerNoVision extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         ElapsedTime runtime = new ElapsedTime();
 
-        TrajectorySequence myTrajectory = drive.trajectorySequenceBuilder(new Pose2d(0, 0, 0))
-                .splineToLinearHeading(new Pose2d(-20 ,-10, Math.toRadians(90)), Math.toRadians(90))
-//                .waitSeconds(1000)
-                .lineToLinearHeading(new Pose2d(0 ,-50, Math.toRadians(0)))
-                .lineToLinearHeading(new Pose2d(0 ,0, 0))
-//                .forward(5)
+        Pose2d startPose = new Pose2d(-38, -61, Math.toRadians(-90));
+
+        drive.setPoseEstimate(startPose);
+        TrajectorySequence myTrajectory = drive.trajectorySequenceBuilder(startPose)
+                .back(5)
+                .splineToLinearHeading(new Pose2d(-18,-45, Math.toRadians(180)), Math.toRadians(180))
+                .addTemporalMarker(6.6, () -> {
+                    // raise arm + servo up
+                })
+                .addTemporalMarker(7.6, () -> {
+                    // stop arm motor power + extend servo arm
+                })
+                .addTemporalMarker(7.8, () -> {
+                    // score
+                })
+                .waitSeconds(2)
+                .strafeLeft(5)
+                .lineToSplineHeading(new Pose2d(-60, -45, Math.toRadians(90)))
+                .lineToConstantHeading(new Vector2d(-60, -50))
+                .addTemporalMarker(17.3, () -> {
+                    // turn carousel motor
+                })
+                .addTemporalMarker(19.3, () -> {
+                    // stop carousel motor
+                })
+                .waitSeconds(2)
+                .splineToConstantHeading(new Vector2d(-60, -35), Math.toRadians(90))
                 .build();
 
         waitForStart();

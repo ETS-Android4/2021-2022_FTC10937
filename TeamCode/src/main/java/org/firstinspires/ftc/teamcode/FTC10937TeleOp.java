@@ -42,15 +42,16 @@ public class FTC10937TeleOp extends OpMode {
     driveTrainSetup Drive = new driveTrainSetup();
     intakeSetup Intake = new intakeSetup();
     carouselSetup Carousel = new carouselSetup();
-//    liftSetup Lift = new liftSetup();
+    liftSetup Lift = new liftSetup();
     servoSetup Servo = new servoSetup();
 
     int servoCount = 0;
+    int rightBump = 0;
 
     @Override
     public void init() {
         // Initialize motors + servos
-//        Lift.init();
+        Lift.init(hardwareMap);
         Carousel.init(hardwareMap);
         Drive.init(hardwareMap);
         Intake.init(hardwareMap);
@@ -76,6 +77,7 @@ public class FTC10937TeleOp extends OpMode {
         // Minimum threshold for deadzone on controller
         double minThreshold = 0.2;
 
+        // Drive motors
         // If controller value > threshold then move robot
         if(Math.abs(gamepad1.left_stick_y) > minThreshold || Math.abs(gamepad1.left_stick_x) > minThreshold
         ||Math.abs(gamepad1.right_stick_x) > minThreshold) {
@@ -90,79 +92,99 @@ public class FTC10937TeleOp extends OpMode {
             Drive.left2.setPower(0);
         }
 
-        if(gamepad2.x) {
-            // if driver 2 = a then run intake motors
+        // Intake Motor
+        if(gamepad2.a) {
+            // Intake in
             Intake.intakeMotor.setPower(1);
-        } else if(gamepad2.a) {
-            // if drive 2 = x then run intake motors in reverse
+        } else if(gamepad2.x) {
+            // Intake out
             Intake.intakeMotor.setPower(-1);
         } else {
             Intake.intakeMotor.setPower(0);
         }
 
-//        if(gamepad2.dpad_up) {
-//            // if driver 2 = up then lift up
-////            Lift.liftMotor.setVelocity(500);
-//            Lift.PID(250);
-//        } else if(gamepad2.dpad_down) {
-//            // if driver 2 = down then lift down
-////            Lift.liftMotor.setVelocity(-500);
-//            Lift.PID(-250);
-//        } else {
-//            Lift.liftMotor.setVelocity(0);
-//        }
+        // Lift motor
+        // Might change to triggers later for better speed control
+        if(gamepad2.dpad_up) {
+            // Lift up
+            Lift.liftMotor.setPower(.3);
+        } else if(gamepad2.dpad_down) {
+            // Lift down
+            Lift.liftMotor.setPower(-.3);
+        } else {
+            Lift.liftMotor.setVelocity(0);
+        }
 
+        // Carousel motor
         if(gamepad2.dpad_left) {
+            // Turn left
             Carousel.carouselMotor.setPower(1);
         } else if(gamepad2.dpad_right) {
+            // Turn right
             Carousel.carouselMotor.setPower(-1);
         } else {
             Carousel.carouselMotor.setPower(0);
         }
 
-//        if(gamepad2.b) {
-//            // if driver 2 = b then dump box
-//            Servo.boxServo.setPosition(.25);
-//        } else {
-//            // if no buttons then go back to default position
-//            Servo.boxServo.setPosition(0);
-//        }
+        // Bucket servo individual control
+        // Used especially for nudging elements in
+        // Also used to secure ball and duck on their way up
+        switch (rightBump) {
+            // First rb input = face servo up
+            case 0:
+                if(gamepad2.right_bumper) {
+                    Servo.bucketServo.setPosition(.5);
+                    rightBump = 1;
+                }
+                break;
+            // wait for release
+            case 1:
+                rightBump = (!gamepad2.right_bumper ? 2:1);
+            // Second rb input = reset servo position
+            case 2:
+                if(gamepad2.right_bumper) {
+                    Servo.bucketServo.setPosition(0);
+                    rightBump = 3;
+                }
+            // wait for release
+            case 3:
+                rightBump = (!gamepad2.right_bumper ? 0:3);
+            // default = wait for first input
+            default:
+                rightBump = 0;
+                break;
+        }
 
-//        if(gamepad2.y && servoCount == 0) {
-//            Servo.rotServo.setPosition(1);
-//            servoCount = 1;
-//        } else if(gamepad2.y && servoCount == 1) {
-//            Servo.bucketServo.setPosition(1);
-//            servoCount = 2;
-//        } else if(!gamepad2.y && servoCount == 2) {
-//            Servo.rotServo.setPosition(0);
-//            Servo.bucketServo.setPosition(0);
-//            servoCount = 0;
-//        }
-
+        // Scoring Servos :)
         switch (servoCount) {
+            // First y input = extend arm but do not dump element
             case 0:
                 if(gamepad2.y) {
                     Servo.rotServo.setPosition(1);
+                    Servo.bucketServo.setPosition(1);
                     servoCount = 1;
                 }
                 break;
+            // wait for button release
             case 1:
                 if(!gamepad2.y) {
                     servoCount = 2;
                 }
                 break;
+            // Second y input = dump element
             case 2:
                 if(gamepad2.y) {
-                    Servo.bucketServo.setPosition(1);
+                    Servo.bucketServo.setPosition(0);
                     servoCount = 3;
                 }
                 break;
+            // wait for button release
             case 3:
                 if(!gamepad2.y) {
                     servoCount = 4;
                 }
                 break;
+            // Third y input = retract servo arm
             case 4:
                 if(gamepad2.y) {
                     Servo.rotServo.setPosition(0);
@@ -170,24 +192,21 @@ public class FTC10937TeleOp extends OpMode {
                     servoCount = 5;
                 }
                 break;
+            // wait for release
             case 5:
                 if(!gamepad2.y) {
                     servoCount = 0;
                 }
                 break;
+            // default = look for first y input
             default:
                 servoCount = 0;
                 break;
         }
 
 
-//        if(gamepad2.y) {
-//            Servo.rotServo.setPosition(1);
-//            Servo.bucketServo.setPosition(1);
-//        } else {
-//
-//        }
-
+        telemetry.addData("rpm: ", Drive.left1.getVelocity());
+        telemetry.update();
     }
 
     @Override
