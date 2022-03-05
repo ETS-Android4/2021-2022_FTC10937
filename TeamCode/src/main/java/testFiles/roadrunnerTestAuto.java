@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package testFiles;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import java.util.Vector;
 
 
-@Autonomous(name="Test Program Auto", group="Auto")
-public class RoadrunnerNoVision extends LinearOpMode {
+@Autonomous(name="Pure Roadrunner Auto", group="Auto")
+public class roadrunnerTestAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);

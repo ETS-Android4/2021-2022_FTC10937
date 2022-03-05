@@ -27,32 +27,64 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package testFiles;
 
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class intakeSetup
-{
-    // Motor Constructors
-    public DcMotorEx intakeMotor = null;
+@TeleOp
 
-    HardwareMap hwMap =  null;
+public class liftPIDf extends LinearOpMode {
 
-    public intakeSetup() {
+    public DcMotorEx liftM = null;
+    public DcMotorEx left1ENC = null;
+
+    double currentVelocity = 5.0;
+
+    double maxVelocity = 0.0;
+
+
+    @Override
+
+    public void runOpMode() {
+
+        liftM = hardwareMap.get(DcMotorEx.class, "caroM");
+        left1ENC = hardwareMap.get(DcMotorEx.class, "r2");
+//        liftM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        left1ENC.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+
+        waitForStart();
+
+        liftM.setPower(.9);
+
+        while (opModeIsActive()) {
+
+
+            currentVelocity = left1ENC.getVelocity();
+
+            if (currentVelocity > maxVelocity) {
+
+                maxVelocity = currentVelocity;
+
+            }
+
+
+
+            telemetry.addData("current velocity", currentVelocity);
+
+            telemetry.addData("maximum velocity", maxVelocity);
+
+            telemetry.update();
+
+        }
 
     }
 
-    // Setup function used to hardwareMap motor
-    public void init(HardwareMap ahwMap){
-        hwMap = ahwMap;
-
-        // Hardware Map
-        intakeMotor = hwMap.get(DcMotorEx.class, "intake");
-        // Set direction
-        intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-    }
 }
-

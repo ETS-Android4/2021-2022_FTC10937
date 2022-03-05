@@ -27,49 +27,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.hardwareSetup;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class driveTrainSetup
+public class carouselSetup
 {
     // Motor Constructors
-    public DcMotorEx left1 = null;
-    public DcMotorEx left2 = null;
-    public DcMotorEx right1 = null;
-    public DcMotorEx right2 = null;
+    public DcMotorEx carouselMotor = null;
 
     HardwareMap hwMap =  null;
 
-    public driveTrainSetup() {
+    public carouselSetup() {
 
     }
 
-    // Initialize Motors
+    // Setup used to map motors
     public void init(HardwareMap ahwMap) {
         hwMap = ahwMap;
 
-        // Hardware Map
-        left1 = hwMap.get(DcMotorEx.class, "l1");
-        left2 = hwMap.get(DcMotorEx.class, "l2");
-        right1 = hwMap.get(DcMotorEx.class, "r1");
-        right2 = hwMap.get(DcMotorEx.class, "r2");
+        // Hardware Map motor as caroM
+        carouselMotor = hwMap.get(DcMotorEx.class, "caroM");
 
         // Set direction
-        left1.setDirection(DcMotorSimple.Direction.FORWARD);
-        left2.setDirection(DcMotorSimple.Direction.FORWARD);
-        right1.setDirection(DcMotorSimple.Direction.REVERSE);
-        right2.setDirection(DcMotorSimple.Direction.REVERSE);
-    }
-
-    public void runUsingEncoders() {
-        left1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        left2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        right1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        right2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        carouselMotor.setDirection(DcMotorEx.Direction.FORWARD);
     }
 }
 

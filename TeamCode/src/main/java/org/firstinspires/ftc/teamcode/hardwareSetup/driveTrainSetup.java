@@ -27,64 +27,49 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.hardwareSetup;
 
-import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.PIDCoefficients;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp
+public class driveTrainSetup
+{
+    // Motor Constructors
+    public DcMotorEx left1 = null;
+    public DcMotorEx left2 = null;
+    public DcMotorEx right1 = null;
+    public DcMotorEx right2 = null;
 
-public class liftPIDf extends LinearOpMode {
+    HardwareMap hwMap =  null;
 
-    public DcMotorEx liftM = null;
-    public DcMotorEx left1ENC = null;
-
-    double currentVelocity = 5.0;
-
-    double maxVelocity = 0.0;
-
-
-    @Override
-
-    public void runOpMode() {
-
-        liftM = hardwareMap.get(DcMotorEx.class, "caroM");
-        left1ENC = hardwareMap.get(DcMotorEx.class, "r2");
-//        liftM.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//        left1ENC.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-
-        waitForStart();
-
-        liftM.setPower(.9);
-
-        while (opModeIsActive()) {
-
-
-            currentVelocity = left1ENC.getVelocity();
-
-            if (currentVelocity > maxVelocity) {
-
-                maxVelocity = currentVelocity;
-
-            }
-
-
-
-            telemetry.addData("current velocity", currentVelocity);
-
-            telemetry.addData("maximum velocity", maxVelocity);
-
-            telemetry.update();
-
-        }
+    public driveTrainSetup() {
 
     }
 
+    // Initialize Motors
+    public void init(HardwareMap ahwMap) {
+        hwMap = ahwMap;
+
+        // Hardware Map
+        left1 = hwMap.get(DcMotorEx.class, "l1");
+        left2 = hwMap.get(DcMotorEx.class, "l2");
+        right1 = hwMap.get(DcMotorEx.class, "r1");
+        right2 = hwMap.get(DcMotorEx.class, "r2");
+
+        // Set direction
+        left1.setDirection(DcMotorSimple.Direction.FORWARD);
+        left2.setDirection(DcMotorSimple.Direction.FORWARD);
+        right1.setDirection(DcMotorSimple.Direction.REVERSE);
+        right2.setDirection(DcMotorSimple.Direction.REVERSE);
+    }
+
+    public void runUsingEncoders() {
+        left1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        left2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        right2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
 }
+

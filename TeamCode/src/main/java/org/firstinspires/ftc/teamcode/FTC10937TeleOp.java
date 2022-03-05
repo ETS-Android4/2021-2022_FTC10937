@@ -31,8 +31,13 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.hardwareSetup.carouselSetup;
+import org.firstinspires.ftc.teamcode.hardwareSetup.driveTrainSetup;
+import org.firstinspires.ftc.teamcode.hardwareSetup.intakeSetup;
+import org.firstinspires.ftc.teamcode.hardwareSetup.liftSetup;
+import org.firstinspires.ftc.teamcode.hardwareSetup.servoSetup;
 
 @TeleOp(name = "TeleOp", group = "Iterative OpMode")
 

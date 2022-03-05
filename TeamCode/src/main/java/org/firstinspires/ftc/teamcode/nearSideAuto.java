@@ -2,21 +2,22 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.hardwareSetup.intakeSetup;
+import org.firstinspires.ftc.teamcode.hardwareSetup.vision;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name="Roadrunner Auto Vision", group="Auto")
-public class roadrunnerTest extends LinearOpMode {
+@Autonomous(name="Near Side Auto", group="Auto")
+public class nearSideAuto extends LinearOpMode {
     OpenCvWebcam webcam;
     SampleMecanumDrive drive;
     intakeSetup Intake = new intakeSetup();
@@ -74,6 +75,12 @@ public class roadrunnerTest extends LinearOpMode {
                 })
                 .waitSeconds(2)
                 .splineToConstantHeading(new Vector2d(-60, -35), Math.toRadians(90))
+
+//                .strafeRight(3)
+//                .forward(3)
+//                .turn(Math.toRadians(90))
+//                .lineTo(new Vector2d(60, -47))
+
                 .build();
 
         TrajectorySequence middleTrajectory = drive.trajectorySequenceBuilder(startPose)
@@ -100,6 +107,12 @@ public class roadrunnerTest extends LinearOpMode {
                 })
                 .waitSeconds(2)
                 .splineToConstantHeading(new Vector2d(-60, -35), Math.toRadians(90))
+
+                //.strafeRight(3)
+                //.forward(3)
+                //.turn(Math.toRadians(90))
+                //.lineTo(new Vector2d(60, -47))
+
                 .build();
 
         TrajectorySequence rightTrajectory = drive.trajectorySequenceBuilder(startPose)
@@ -126,6 +139,12 @@ public class roadrunnerTest extends LinearOpMode {
                 })
                 .waitSeconds(2)
                 .splineToConstantHeading(new Vector2d(-60, -35), Math.toRadians(90))
+
+                //.strafeRight(3)
+                //.forward(3)
+                //.turn(Math.toRadians(90))
+                //.lineTo(new Vector2d(60, -47))
+
                 .build();
 
         waitForStart();

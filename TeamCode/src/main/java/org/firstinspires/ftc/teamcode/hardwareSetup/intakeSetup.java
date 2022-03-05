@@ -27,31 +27,31 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.hardwareSetup;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class carouselSetup
+public class intakeSetup
 {
     // Motor Constructors
-    public DcMotorEx carouselMotor = null;
+    public DcMotorEx intakeMotor = null;
 
     HardwareMap hwMap =  null;
 
-    public carouselSetup() {
+    public intakeSetup() {
 
     }
 
-    // Setup used to map motors
-    public void init(HardwareMap ahwMap) {
+    // Setup function used to hardwareMap motor
+    public void init(HardwareMap ahwMap){
         hwMap = ahwMap;
 
-        // Hardware Map motor as caroM
-        carouselMotor = hwMap.get(DcMotorEx.class, "caroM");
-
+        // Hardware Map
+        intakeMotor = hwMap.get(DcMotorEx.class, "intake");
         // Set direction
-        carouselMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 }
 
