@@ -29,70 +29,87 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp
-public class liftSetup extends LinearOpMode
+public class liftSetup
 {
     // Motor Constructors
     public DcMotorEx liftMotor = null;
 
-    static double speed = 1200;
 
-    public static PIDCoefficients pidCoeffs = new PIDCoefficients(0,0,0);
-    public PIDCoefficients pidGains = new PIDCoefficients(0,0,0);
+    HardwareMap hwMap =  null;
 
-    ElapsedTime PIDTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+    public liftSetup() {
 
-    @Override
-    public void runOpMode() {
-        liftMotor = hardwareMap.get(DcMotorEx.class, "liftM");
-
-        liftMotor.setDirection(DcMotorEx.Direction.FORWARD);
-
-        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        waitForStart();
-
-        if(opModeIsActive()) {
-            while(opModeIsActive()) {
-                PID(speed);
-
-                telemetry.update();
-            }
-        }
     }
 
-    double integral = 0;
-    double lastError = 0;
+    // Setup function used to hardwareMap motor
+    public void init(HardwareMap ahwMap){
+        hwMap = ahwMap;
 
-    public void PID(double targetVelocity) {
-
-        PIDTimer.reset();
-
-        double currentVelocity = liftMotor.getVelocity();
-
-        double error = targetVelocity - currentVelocity;
-
-        integral += error * PIDTimer.time();
-
-        double deltaError = error - lastError;
-        double derivative = deltaError / PIDTimer.time();
-
-        pidGains.p = pidCoeffs.p * error;
-        pidGains.i = pidCoeffs.i * integral;
-        pidGains.d = pidGains.d * derivative;
-
-        liftMotor.setVelocity(pidGains.p + pidGains.i + pidGains.d + targetVelocity);
-
-        lastError = error;
+        // Hardware Map
+        liftMotor = hwMap.get(DcMotorEx.class, "liftM");
+        // Set direction
+        liftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
     }
+//    static double speed = 1200;
+//
+//    public static PIDCoefficients pidCoeffs = new PIDCoefficients(0,0,0);
+//    public PIDCoefficients pidGains = new PIDCoefficients(0,0,0);
+//
+//    ElapsedTime PIDTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+//
+//    @Override
+//    public void runOpMode() {
+//        liftMotor = hardwareMap.get(DcMotorEx.class, "liftM");
+//
+//        liftMotor.setDirection(DcMotorEx.Direction.FORWARD);
+//
+//        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//
+//        waitForStart();
+//
+//        if(opModeIsActive()) {
+//            while(opModeIsActive()) {
+//                PID(speed);
+//                telemetry.addData("RPM: ", liftMotor.getVelocity());
+//                telemetry.update();
+//            }
+//        }
+//    }
+//
+//    double integral = 0;
+//    double lastError = 0;
+//
+//    public void PID(double targetVelocity) {
+//
+//        PIDTimer.reset();
+//
+//        double currentVelocity = liftMotor.getVelocity();
+//
+//        double error = targetVelocity - currentVelocity;
+//
+//        integral += error * PIDTimer.time();
+//
+//        double deltaError = error - lastError;
+//        double derivative = deltaError / PIDTimer.time();
+//
+//        pidGains.p = pidCoeffs.p * error;
+//        pidGains.i = pidCoeffs.i * integral;
+//        pidGains.d = pidGains.d * derivative;
+//
+//        liftMotor.setVelocity(pidGains.p + pidGains.i + pidGains.d + targetVelocity);
+//
+//        lastError = error;
+//    }
 }
 

@@ -15,15 +15,16 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-@Autonomous(name="Roadrunner Test Auto Vision", group="Auto")
+@Autonomous(name="Roadrunner Auto Vision", group="Auto")
 public class roadrunnerTest extends LinearOpMode {
     OpenCvWebcam webcam;
-    SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+    SampleMecanumDrive drive;
     intakeSetup Intake = new intakeSetup();
 
     ElapsedTime runtime = new ElapsedTime();
     @Override
     public void runOpMode() throws InterruptedException {
+        drive = new SampleMecanumDrive(hardwareMap);
         Intake.init(hardwareMap);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().
                 getIdentifier("cameraMonitorViewId", "id",
@@ -46,97 +47,85 @@ public class roadrunnerTest extends LinearOpMode {
             }
         });
 
-        TrajectorySequence leftTrajectory = drive.trajectorySequenceBuilder(new Pose2d(-44, -61, Math.toRadians(90)))
-                .strafeRight(33)
-                .forward(19)
-                .addTemporalMarker(2.6, () -> {
-                    //score element
+        Pose2d startPose = new Pose2d(-38, -61, Math.toRadians(90));
+        drive.setPoseEstimate(startPose);
 
+        TrajectorySequence leftTrajectory = drive.trajectorySequenceBuilder(startPose)
+                .back(5)
+                .splineToLinearHeading(new Pose2d(-18,-45, Math.toRadians(180)), Math.toRadians(180))
+                .addTemporalMarker(6.6, () -> {
+                    // raise arm to lowest + servo up
                 })
-                .waitSeconds(1)
-                .addTemporalMarker(3.6, () -> {
-                    //intake stop
-
+                .addTemporalMarker(7.6, () -> {
+                    // stop arm motor power + extend servo arm
                 })
-                .waitSeconds(0.5)
-                .addTemporalMarker(4.1, () -> {
-                    //intake retract
-
+                .addTemporalMarker(7.8, () -> {
+                    // score
                 })
-                .waitSeconds(0.5)
-                .lineToConstantHeading(new Vector2d(-60, -60))
-                .addTemporalMarker(6.5, () -> {
-                    //spin carousel
-
+                .waitSeconds(2)
+                .strafeLeft(5)
+                .lineToSplineHeading(new Pose2d(-60, -45, Math.toRadians(90)))
+                .lineToConstantHeading(new Vector2d(-60, -50))
+                .addTemporalMarker(17.3, () -> {
+                    // turn carousel motor
                 })
-                .waitSeconds(1)
-                .addTemporalMarker(7.5, () -> {
-                    //carousel stop
-
+                .addTemporalMarker(19.3, () -> {
+                    // stop carousel motor
                 })
-                .lineTo(new Vector2d(-60, -35))
+                .waitSeconds(2)
+                .splineToConstantHeading(new Vector2d(-60, -35), Math.toRadians(90))
                 .build();
 
-        TrajectorySequence middleTrajectory = drive.trajectorySequenceBuilder(new Pose2d(-35, -61, Math.toRadians(90)))
-                .strafeRight(24)
-                .forward(19)
-                .addTemporalMarker(2.4, () -> {
-                    //score element
-
+        TrajectorySequence middleTrajectory = drive.trajectorySequenceBuilder(startPose)
+                .back(5)
+                .splineToLinearHeading(new Pose2d(-18,-45, Math.toRadians(180)), Math.toRadians(180))
+                .addTemporalMarker(6.6, () -> {
+                    // raise arm to middle level + servo up
                 })
-                .waitSeconds(1)
-                .addTemporalMarker(3.4, () -> {
-                    //intake stop
-
+                .addTemporalMarker(7.6, () -> {
+                    // stop arm motor power + extend servo arm
                 })
-                .waitSeconds(0.5)
-                .addTemporalMarker(3.4, () -> {
-                    //intake retract
-
+                .addTemporalMarker(7.8, () -> {
+                    // score
                 })
-                .waitSeconds(0.5)
-                .lineToConstantHeading(new Vector2d(-60, -60))
-                .addTemporalMarker(6.3, () -> {
-                    //spin carousel
-
+                .waitSeconds(2)
+                .strafeLeft(5)
+                .lineToSplineHeading(new Pose2d(-60, -45, Math.toRadians(90)))
+                .lineToConstantHeading(new Vector2d(-60, -50))
+                .addTemporalMarker(17.3, () -> {
+                    // turn carousel motor
                 })
-                .waitSeconds(1)
-                .addTemporalMarker(7.3, () -> {
-                    //carousel stop
-
+                .addTemporalMarker(19.3, () -> {
+                    // stop carousel motor
                 })
-                .lineTo(new Vector2d(-60, -35))
+                .waitSeconds(2)
+                .splineToConstantHeading(new Vector2d(-60, -35), Math.toRadians(90))
                 .build();
 
-        TrajectorySequence rightTrajectory = drive.trajectorySequenceBuilder(new Pose2d(-27, -61, Math.toRadians(90)))
-                .strafeRight(16)
-                .forward(19)
-                .addTemporalMarker(2.6, () -> {
-                    //score element
-
+        TrajectorySequence rightTrajectory = drive.trajectorySequenceBuilder(startPose)
+                .back(5)
+                .splineToLinearHeading(new Pose2d(-18,-45, Math.toRadians(180)), Math.toRadians(180))
+                .addTemporalMarker(6.6, () -> {
+                    // raise arm to highest + servo up
                 })
-                .waitSeconds(1)
-                .addTemporalMarker(3.6, () -> {
-                    //intake stop
-
+                .addTemporalMarker(7.6, () -> {
+                    // stop arm motor power + extend servo arm
                 })
-                .waitSeconds(0.5)
-                .addTemporalMarker(4.1, () -> {
-                    //intake retract
-
+                .addTemporalMarker(7.8, () -> {
+                    // score
                 })
-                .waitSeconds(0.5)
-                .lineToConstantHeading(new Vector2d(-60, -60))
-                .addTemporalMarker(6.1, () -> {
-                    //spin carousel
-
+                .waitSeconds(2)
+                .strafeLeft(5)
+                .lineToSplineHeading(new Pose2d(-60, -45, Math.toRadians(90)))
+                .lineToConstantHeading(new Vector2d(-60, -50))
+                .addTemporalMarker(17.3, () -> {
+                    // turn carousel motor
                 })
-                .waitSeconds(1)
-                .addTemporalMarker(7.1, () -> {
-                    //carousel stop
-
+                .addTemporalMarker(19.3, () -> {
+                    // stop carousel motor
                 })
-                .lineTo(new Vector2d(-60, -35))
+                .waitSeconds(2)
+                .splineToConstantHeading(new Vector2d(-60, -35), Math.toRadians(90))
                 .build();
 
         waitForStart();
@@ -151,11 +140,11 @@ public class roadrunnerTest extends LinearOpMode {
         switch (detector.getLocation()) {
             case RIGHT:
                 if (isStopRequested()) return;
-                drive.followTrajectorySequence(leftTrajectory);
+                drive.followTrajectorySequence(rightTrajectory);
                 break;
             case LEFT:
                 if (isStopRequested()) return;
-                drive.followTrajectorySequence(rightTrajectory);
+                drive.followTrajectorySequence(leftTrajectory);
                 break;
             case CENTER:
                 if (isStopRequested()) return;
