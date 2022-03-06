@@ -74,12 +74,24 @@ public class nearSideAuto extends LinearOpMode {
                     // stop carousel motor
                 })
                 .waitSeconds(2)
+                // To storage (safe)
                 .splineToConstantHeading(new Vector2d(-60, -35), Math.toRadians(90))
 
-//                .strafeRight(3)
-//                .forward(3)
-//                .turn(Math.toRadians(90))
-//                .lineTo(new Vector2d(60, -47))
+                // To warehouse (untested)
+                .addTemporalMarker(24.3, () -> {
+                    // full power back
+                    drive.setMotorPowers(-1, -1, -1, -1);
+                })
+                .addTemporalMarker(29, () -> {
+                    // full power back
+                    drive.setMotorPowers(0, 0, 0, 0);
+                })
+
+                // to warehouse but takes over 30 seconds (> time limit)
+                .strafeRight(3)
+                .forward(3)
+                .turn(Math.toRadians(90))
+                .lineTo(new Vector2d(60, -47))
 
                 .build();
 
