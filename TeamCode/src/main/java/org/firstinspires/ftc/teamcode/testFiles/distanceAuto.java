@@ -1,4 +1,4 @@
-//package testFiles;
+//package org.firstinspires.ftc.teamcode.testFiles;
 //
 //import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -10,7 +10,7 @@
 //import org.openftc.easyopencv.OpenCvCameraRotation;
 //import org.openftc.easyopencv.OpenCvWebcam;
 //
-//import testFiles.distanceMeasurement;
+//import org.firstinspires.ftc.teamcode.testFiles.distanceMeasurement;
 //
 //@Autonomous(name="Distance Detection Auto", group="Auto")
 //public class distanceAuto extends LinearOpMode {
